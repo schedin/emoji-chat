@@ -80,7 +80,7 @@ jobs:
         run: podman build -t ${{ env.IMAGE_NAME }}-llm:${{ env.IMAGE_TAG }} . -f images/llm/Dockerfile
 
       - name: Push LLM container to registry
-        run: skopeo copy containers-storage:localhost/${{ env.IMAGE_NAME }}-llm:${{ env.IMAGE_TAG }} --dest-tls-verify=false docker://${{ env.REGISTRY_URL }}-llm/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+        run: skopeo copy containers-storage:localhost/${{ env.IMAGE_NAME }}-llm:${{ env.IMAGE_TAG }} --dest-tls-verify=false docker://${{ env.REGISTRY_URL }}/${{ env.IMAGE_NAME }}-llm:${{ env.IMAGE_TAG }}
 
 
   deploy-helm:
