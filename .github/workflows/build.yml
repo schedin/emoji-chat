@@ -87,8 +87,8 @@ jobs:
     name: Deploy Helm Chart
     needs:
       - generate-tag
-      - build-frontend
-      # - build-backend
+      # - build-frontend
+      - build-backend
     runs-on: emoji-chat-runner-set
     steps:
       - uses: actions/checkout@v3
