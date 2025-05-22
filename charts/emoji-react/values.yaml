@@ -14,7 +14,7 @@ frontend:
 backend:
   image:
     image: "backend"
-  llmServerUrl: "http://llm-server:8000"    
+  llmServerUrl: "http://llm-server:11434"
 
 ingress:
   annotations: {}

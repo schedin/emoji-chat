@@ -14,9 +14,13 @@ if __name__ == "__main__":
     print("Starting Emoji Chat Backend in development mode...")
     print(f"Server will run on http://{settings.host}:{settings.port}")
     print(f"LLM URL: {settings.llm_url}")
+    print(f"LLM Model: {settings.llm_model}")
     print(f"Content moderation enabled: {settings.enable_content_moderation}")
+    if settings.enable_content_moderation:
+        moderation_model = settings.moderation_model or settings.llm_model
+        print(f"Moderation model: {moderation_model}")
     print("\nPress Ctrl+C to stop the server")
-    
+
     uvicorn.run(
         "main:app",
         host=settings.host,

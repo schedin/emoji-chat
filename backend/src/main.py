@@ -43,7 +43,7 @@ async def global_exception_handler(request: Request, exc: Exception):
         content=ErrorResponse(
             error="Internal server error",
             detail="An unexpected error occurred"
-        ).dict()
+        ).model_dump()
     )
 
 
@@ -53,7 +53,9 @@ async def health_check():
     return HealthResponse(
         status="healthy",
         llm_url=settings.llm_url,
-        content_moderation_enabled=settings.enable_content_moderation
+        llm_model=settings.llm_model,
+        content_moderation_enabled=settings.enable_content_moderation,
+        moderation_model=settings.moderation_model or settings.llm_model
     )
 
 
@@ -61,7 +63,7 @@ async def health_check():
 async def generate_emojis(request: MessageRequest):
     """
     Generate emojis for a given message.
-    
+
     This endpoint:
     1. Validates the message parameter for reasonable size
     2. Optionally checks content moderation (if enabled)
@@ -70,35 +72,35 @@ async def generate_emojis(request: MessageRequest):
     try:
         message = request.message
         logger.info(f"Processing message: {message[:50]}...")
-        
+
         # Content moderation (if enabled)
         moderation_passed = None
         if settings.enable_content_moderation:
             is_safe, reason = await llm_client.moderate_content(message)
             moderation_passed = is_safe
-            
+
             if not is_safe:
                 logger.warning(f"Message failed moderation: {reason}")
                 raise HTTPException(
                     status_code=400,
                     detail=f"Message failed content moderation: {reason}"
                 )
-        
+
         # Generate emojis
         emojis = await llm_client.generate_emojis(message)
-        
+
         if not emojis:
             logger.warning("No emojis generated, using fallback")
             emojis = ["😊", "👍"]
-        
+
         logger.info(f"Generated emojis: {emojis}")
-        
+
         return EmojiResponse(
             emojis=emojis,
             message=message,
             moderation_passed=moderation_passed
         )
-        
+
     except HTTPException:
         # Re-raise HTTP exceptions
         raise
@@ -126,8 +128,12 @@ async def root():
 if __name__ == "__main__":
     logger.info(f"Starting server on {settings.host}:{settings.port}")
     logger.info(f"LLM URL: {settings.llm_url}")
+    logger.info(f"LLM Model: {settings.llm_model}")
     logger.info(f"Content moderation enabled: {settings.enable_content_moderation}")
-    
+    if settings.enable_content_moderation:
+        moderation_model = settings.moderation_model or settings.llm_model
+        logger.info(f"Moderation model: {moderation_model}")
+
     uvicorn.run(
         "main:app",
         host=settings.host,
