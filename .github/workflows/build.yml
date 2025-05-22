@@ -99,4 +99,4 @@ jobs:
             --namespace emoji-chat \
             --create-namespace \
             --set image.tag=${{ needs.generate-tag.outputs.IMAGE_TAG }} \
-            --set global.imageRegistry=${{ env.REGISTRY_URL }}
+            --set global.imageRegistryPrefix=${{ env.REGISTRY_URL }}
