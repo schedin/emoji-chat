@@ -51,7 +51,7 @@ jobs:
         run: npm run build
 
       - name: Build container
-        run: podman build -t ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} .
+        run: podman build -t ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} images/frontend
 
       - name: Push container to registry
         run: skopeo copy containers-storage:localhost/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} --dest-tls-verify=false docker://${{ env.REGISTRY_URL }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
@@ -71,13 +71,13 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Build Python API container
-        run: podman build -t ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} .
+        run: podman build -t ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} api/images
 
       - name: Push Python API container to registry
         run: skopeo copy containers-storage:localhost/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} --dest-tls-verify=false docker://${{ env.REGISTRY_URL }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
 
       - name: Build LLM container
-        run: podman build -t ${{ env.IMAGE_NAME }}-llm:${{ env.IMAGE_TAG }} .
+        run: podman build -t ${{ env.IMAGE_NAME }}-llm:${{ env.IMAGE_TAG }} api/llm
 
       - name: Push LLM container to registry
         run: skopeo copy containers-storage:localhost/${{ env.IMAGE_NAME }}-llm:${{ env.IMAGE_TAG }} --dest-tls-verify=false docker://${{ env.REGISTRY_URL }}-llm/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
