@@ -1,0 +1,28 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress
+  labels:
+    app: frontend
+  annotations:
+{{- with .Values.ingress.annotations }}
+{{ toYaml . | indent 4 }}
+{{- end }}
+spec:
+  tls:
+{{- with .Values.ingress.tls }}
+{{ toYaml . | indent 2 }}
+{{- end }}
+  rules:
+{{- range .Values.ingress.hosts }}
+  - host: {{ . | quote }}
+    http:
+      paths:
+      - path: "/"
+        pathType: "Prefix"
+        backend:
+          service:
+            name: frontend
+            port:
+              name: http
+{{- end }}
