@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: nginx
-        image: "{{ .Values.global.imageRegistry }}/{{ .Values.frontend.image.image}}:{{.Values.image.tag}}"
+        image: "{{ .Values.global.imageRegistryPrefix }}/{{ .Values.frontend.image.image}}:{{.Values.image.tag}}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         ports:
         - name: http
