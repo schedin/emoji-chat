@@ -113,7 +113,7 @@ Respond with EXACTLY "SAFE" for almost all messages. Only respond with "UNSAFE: 
     def _split_emoji_string(self, text: str) -> List[str]:
         """
         Split a continuous string of emojis into individual emoji units.
-        Handles complex emojis with modifiers and joiners.
+        Uses a simpler approach that works better with complex emojis.
         """
         if not text:
             return []
@@ -126,8 +126,8 @@ Respond with EXACTLY "SAFE" for almost all messages. Only respond with "UNSAFE: 
             char = text[i]
             code_point = ord(char)
 
-            # Check if this is an emoji character
-            is_emoji_char = (
+            # Check if this is a base emoji character (not a modifier)
+            is_base_emoji = (
                 0x1F600 <= code_point <= 0x1F64F or  # Emoticons
                 0x1F300 <= code_point <= 0x1F5FF or  # Misc Symbols and Pictographs
                 0x1F680 <= code_point <= 0x1F6FF or  # Transport and Map
@@ -136,43 +136,27 @@ Respond with EXACTLY "SAFE" for almost all messages. Only respond with "UNSAFE: 
                 0x2700 <= code_point <= 0x27BF      # Dingbats
             )
 
-            # Check if this is a modifier (variation selector, joiner, etc.)
+            # Check if this is a modifier
             is_modifier = (
                 0xFE00 <= code_point <= 0xFE0F or  # Variation selectors
                 code_point == 0x200D or            # Zero-width joiner
                 code_point == 0x200C               # Zero-width non-joiner
             )
 
-            if is_emoji_char:
-                # If we already have an emoji and this is a new emoji base character,
-                # save the current one and start a new one
-                if current_emoji:
-                    # Look ahead to see if the next character is a modifier for the current emoji
-                    next_is_modifier = False
-                    if i + 1 < len(text):
-                        next_code = ord(text[i + 1])
-                        next_is_modifier = (
-                            0xFE00 <= next_code <= 0xFE0F or  # Variation selectors
-                            next_code == 0x200D or            # Zero-width joiner
-                            next_code == 0x200C               # Zero-width non-joiner
-                        )
-
-                    # If this is a new emoji base (not a modifier for current), save current
-                    if not next_is_modifier and not self._is_emoji_modifier_only(current_emoji):
-                        emojis.append(current_emoji)
-                        current_emoji = char
-                    else:
-                        current_emoji += char
-                else:
-                    current_emoji = char
-            elif is_modifier:
-                # Add modifiers to the current emoji
+            if is_base_emoji:
+                # If we already have a current emoji, save it and start a new one
+                if current_emoji and not self._is_emoji_modifier_only(current_emoji):
+                    emojis.append(current_emoji)
+                current_emoji = char
+            elif is_modifier and current_emoji:
+                # Add modifier to current emoji
                 current_emoji += char
-            else:
-                # Non-emoji character, save current emoji if any and skip this char
+            elif not is_modifier and not is_base_emoji:
+                # Non-emoji character, save current emoji if any
                 if current_emoji and not self._is_emoji_modifier_only(current_emoji):
                     emojis.append(current_emoji)
                 current_emoji = ""
+            # Skip other characters
 
             i += 1
 
