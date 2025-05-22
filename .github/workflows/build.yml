@@ -9,13 +9,27 @@ env:
   REGISTRY_URL: registry.moshicon.se:30000
 
 jobs:
-  build-frontend:
-    name: Build web frontend
+  generate-tag:
+    name: Generate image tag
     runs-on: moshicon-se-runner-set
     outputs:
       IMAGE_TAG: ${{ steps.set-tag.outputs.tag }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set image tag
+        id: set-tag
+        run: |
+          TAG=$(git rev-parse --short=7 HEAD)-$(date +'%Y%m%d')
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+
+  build-frontend:
+    name: Build web frontend
+    needs: generate-tag
+    runs-on: moshicon-se-runner-set
     env:
       IMAGE_NAME: emoji-chat/frontend
+      IMAGE_TAG: ${{ needs.generate-tag.outputs.IMAGE_TAG }}
     defaults:
       run:
         working-directory: ./frontend
@@ -36,13 +50,6 @@ jobs:
       - name: Build frontend
         run: npm run build
 
-      - name: Set image tag
-        id: set-tag
-        run: |
-          TAG=$(git rev-parse --short=7 HEAD)-$(date +'%Y%m%d')
-          echo "IMAGE_TAG=$TAG" >> $GITHUB_ENV
-          echo "tag=$TAG" >> $GITHUB_OUTPUT
-
       - name: Build container
         run: podman build -t ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} .
 
@@ -51,24 +58,17 @@ jobs:
 
   build-backend:
     name: Build web backend
+    needs: generate-tag
     runs-on: moshicon-se-runner-set
-    outputs:
-      IMAGE_TAG: ${{ steps.set-tag.outputs.tag }}
     env:
       IMAGE_NAME: emoji-chat/backend
+      IMAGE_TAG: ${{ needs.generate-tag.outputs.IMAGE_TAG }}
     defaults:
       run:
         working-directory: ./backend
 
     steps:
       - uses: actions/checkout@v3
-
-      - name: Set image tag
-        id: set-tag
-        run: |
-          TAG=$(git rev-parse --short=7 HEAD)-$(date +'%Y%m%d')
-          echo "IMAGE_TAG=$TAG" >> $GITHUB_ENV
-          echo "tag=$TAG" >> $GITHUB_OUTPUT
 
       - name: Build Python API container
         run: podman build -t ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} .
@@ -86,6 +86,7 @@ jobs:
   deploy-helm:
     name: Deploy Helm Chart
     needs:
+      - generate-tag
       - build-frontend
       - build-backend
     runs-on: moshicon-se-runner-set
@@ -97,5 +98,5 @@ jobs:
           helm upgrade --install emoji-chat ./charts/emoji-chat \
             --namespace emoji-chat \
             --create-namespace \
-            --set image.tag=${{ needs.build-frontend.outputs.IMAGE_TAG }} \
+            --set image.tag=${{ needs.generate-tag.outputs.IMAGE_TAG }} \
             --set global.imageRegistry=${{ env.REGISTRY_URL }}
