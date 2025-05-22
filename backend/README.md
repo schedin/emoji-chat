@@ -6,20 +6,20 @@ A FastAPI-based backend server that generates emojis based on user messages usin
 
 ## Run locally
 
-### Setup
 
-**Linux/MacOS:**
+### Linux/MacOS
 ```bash
 python -m venv .venv
 .venv/Scripts/activate
 ```
 
-**Windows:**
+### Windows
 ```cmd
 python -m venv .venv
-.venv\Scripts\activate
+.venv\Scripts\activate.bat
 ```
 
+### Install dependencies
 
 ```bash
 pip install -r requirements.txt
