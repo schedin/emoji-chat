@@ -3,7 +3,8 @@ kind: Ingress
 metadata:
   name: ingress
   labels:
-    app: frontend
+    app.kubernetes.io/name: emoji-chat
+    app.kubernetes.io/component: ingress
   annotations:
 {{- with .Values.ingress.annotations }}
 {{ toYaml . | indent 4 }}

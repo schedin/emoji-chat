@@ -16,6 +16,10 @@ backend:
     image: "backend"
   llmServerUrl: "http://llm-server:11434"
 
+backendLlm:
+  image:
+    image: "llm"
+
 ingress:
   annotations: {}
     # cert-manager.io/cluster-issuer: "letsencrypt"
