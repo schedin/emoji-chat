@@ -7,7 +7,7 @@ from fastapi.responses import JSONResponse
 import uvicorn
 
 from config import settings
-from models import MessageRequest, EmojiResponse, ErrorResponse, HealthResponse
+from models import MessageRequest, EmojiResponse, ErrorResponse, HealthResponse, SampleResponse
 from llm_client import llm_client
 
 # Configure logging
@@ -112,6 +112,32 @@ async def generate_emojis(request: MessageRequest):
         )
 
 
+@app.get("/api/sample", response_model=SampleResponse)
+async def get_sample():
+    """
+    Generate a sample inspirational sentence.
+
+    This endpoint generates a short, inspirational sentence that can be used
+    as inspiration for users to start conversations or express themselves.
+    """
+    try:
+        logger.info("Generating sample sentence")
+
+        # Generate sample sentence
+        sample = await llm_client.generate_sample_sentence()
+
+        logger.info(f"Generated sample: {sample}")
+
+        return SampleResponse(sample=sample)
+
+    except Exception as e:
+        logger.error(f"Error generating sample: {str(e)}")
+        raise HTTPException(
+            status_code=500,
+            detail="Failed to generate sample sentence"
+        )
+
+
 @app.get("/")
 async def root():
     """Root endpoint."""
@@ -120,7 +146,8 @@ async def root():
         "version": "1.0.0",
         "endpoints": {
             "health": "/health",
-            "generate_emojis": "/api/emojis"
+            "generate_emojis": "/api/emojis",
+            "sample": "/sample"
         }
     }
 

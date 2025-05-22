@@ -250,6 +250,64 @@ Your response:
             logger.error(f"Emoji generation error: {str(e)}")
             return ["😊", "👍"]  # Fallback emojis
 
+    async def generate_sample_sentence(self) -> str:
+        """
+        Generate a short inspirational sentence to use as inspiration for users.
+
+        Returns:
+            A short inspirational sentence
+        """
+        sample_prompt = """
+You are a creative writing assistant. Generate a short, inspirational, and engaging sentence that could be used as inspiration for someone to start a conversation or express themselves.
+
+The sentence should be:
+- Positive and uplifting
+- 5-15 words long
+- Something that would make someone want to share their feelings or thoughts
+- Suitable for all ages
+- Not too specific to any particular situation
+
+Examples of good inspirational sentences:
+- "Today feels like a day full of possibilities!"
+- "I'm grateful for the little moments that make me smile."
+- "There's something magical about discovering new things."
+- "I love how music can change my entire mood."
+- "Sometimes the best adventures happen close to home."
+
+Generate ONE inspirational sentence following these guidelines. Respond with only the sentence, no quotes or additional text.
+"""
+
+        try:
+            response = await self._make_request(sample_prompt)
+            if response is None:
+                logger.warning("Sample generation failed, returning default sample")
+                return "Today is a great day to share something positive!"
+
+            # Clean up the response
+            cleaned_response = response.strip()
+
+            # Remove quotes if present
+            if cleaned_response.startswith('"') and cleaned_response.endswith('"'):
+                cleaned_response = cleaned_response[1:-1]
+            elif cleaned_response.startswith("'") and cleaned_response.endswith("'"):
+                cleaned_response = cleaned_response[1:-1]
+
+            # Ensure it's not too long (fallback if LLM doesn't follow instructions)
+            if len(cleaned_response) > 100:
+                logger.warning("Generated sample too long, using fallback")
+                return "Today is a great day to share something positive!"
+
+            # Ensure it's not empty
+            if not cleaned_response:
+                logger.warning("Generated sample is empty, using fallback")
+                return "Today is a great day to share something positive!"
+
+            return cleaned_response
+
+        except Exception as e:
+            logger.error(f"Sample generation error: {str(e)}")
+            return "Today is a great day to share something positive!"  # Fallback sample
+
 
 # Global LLM client instance
 llm_client = LLMClient()

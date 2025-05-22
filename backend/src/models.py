@@ -52,6 +52,15 @@ class ErrorResponse(BaseModel):
     detail: Optional[str] = Field(None, description="Additional error details")
 
 
+class SampleResponse(BaseModel):
+    """Response model for sample sentence generation."""
+
+    sample: str = Field(
+        ...,
+        description="A short inspirational sentence to use as inspiration"
+    )
+
+
 class HealthResponse(BaseModel):
     """Health check response model."""
 
