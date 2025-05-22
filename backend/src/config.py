@@ -28,6 +28,9 @@ class Settings(BaseSettings):
     # API settings
     api_timeout: int = int(os.getenv("API_TIMEOUT", "30"))
 
+    # Development settings
+    development_mode: bool = os.getenv("DEVELOPMENT_MODE", "false").lower() == "true"
+
     class Config:
         env_file = ".env"
         case_sensitive = False

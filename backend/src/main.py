@@ -125,8 +125,13 @@ async def root():
     }
 
 
-if __name__ == "__main__":
-    logger.info(f"Starting server on {settings.host}:{settings.port}")
+def main():
+    # Determine mode based on settings
+    mode = "development" if settings.development_mode else "production"
+
+    # Log startup information
+    logger.info(f"Starting Emoji Chat Backend in {mode} mode...")
+    logger.info(f"Server will run on http://{settings.host}:{settings.port}")
     logger.info(f"LLM URL: {settings.llm_url}")
     logger.info(f"LLM Model: {settings.llm_model}")
     logger.info(f"Content moderation enabled: {settings.enable_content_moderation}")
@@ -134,10 +139,18 @@ if __name__ == "__main__":
         moderation_model = settings.moderation_model or settings.llm_model
         logger.info(f"Moderation model: {moderation_model}")
 
+    if settings.development_mode:
+        logger.info("Development mode: Auto-reload enabled")
+        logger.info("Press Ctrl+C to stop the server")
+
     uvicorn.run(
         "main:app",
         host=settings.host,
         port=settings.port,
-        reload=True,
+        reload=settings.development_mode,  # Enable reload only in development
         log_level="info"
     )
+
+
+if __name__ == "__main__":
+    main()

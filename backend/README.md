@@ -6,14 +6,15 @@ A FastAPI-based backend server that generates emojis based on user messages usin
 
 ## Run locally
 
+### Setup virtual environment
 
-### Linux/MacOS
+#### Linux/MacOS
 ```bash
 python -m venv .venv
-.venv/Scripts/activate
+source .venv/bin/activate
 ```
 
-### Windows
+#### Windows
 ```cmd
 python -m venv .venv
 .venv\Scripts\activate.bat
@@ -23,7 +24,19 @@ python -m venv .venv
 
 ```bash
 pip install -r requirements.txt
-```	
+```
+
+### Download LLM model
+```bash
+ollama pull gemma3:1b-it-qat
+```
+
+
+### Start the server
+
+```bash
+python src/main.py
+```
 
 ## Environment variables for backend Python server
 
@@ -40,9 +53,4 @@ pip install -r requirements.txt
 | `HOST` | `0.0.0.0` | Server host |
 | `PORT` | `8000` | Server port |
 | `API_TIMEOUT` | `30` | LLM API timeout in seconds |
-
-## Running the Server
-
-```bash
-python src/main.py
-```
+| `DEVELOPMENT_MODE` | `false` | Enable development mode with auto-reload |
