@@ -10,3 +10,7 @@ RUN pip install --no-cache-dir -r requirements.txt && \
     pip cache purge
 
 COPY src /app
+
+EXPOSE 8000
+
+CMD ["python", "start.py"]
