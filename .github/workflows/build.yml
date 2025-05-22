@@ -11,7 +11,7 @@ env:
 jobs:
   generate-tag:
     name: Generate image tag
-    runs-on: moshicon-se-runner-set
+    runs-on: emoji-chat-runner-set
     outputs:
       IMAGE_TAG: ${{ steps.set-tag.outputs.tag }}
     steps:
@@ -26,7 +26,7 @@ jobs:
   build-frontend:
     name: Build web frontend
     needs: generate-tag
-    runs-on: moshicon-se-runner-set
+    runs-on: emoji-chat-runner-set
     env:
       IMAGE_NAME: emoji-chat/frontend
       IMAGE_TAG: ${{ needs.generate-tag.outputs.IMAGE_TAG }}
@@ -59,7 +59,7 @@ jobs:
   build-backend:
     name: Build web backend
     needs: generate-tag
-    runs-on: moshicon-se-runner-set
+    runs-on: emoji-chat-runner-set
     env:
       IMAGE_NAME: emoji-chat/backend
       IMAGE_TAG: ${{ needs.generate-tag.outputs.IMAGE_TAG }}
@@ -89,7 +89,7 @@ jobs:
       - generate-tag
       - build-frontend
       - build-backend
-    runs-on: moshicon-se-runner-set
+    runs-on: emoji-chat-runner-set
     steps:
       - uses: actions/checkout@v3
 
