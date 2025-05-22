@@ -49,9 +49,39 @@ jobs:
       - name: Push container to registry
         run: skopeo copy containers-storage:localhost/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} --dest-tls-verify=false docker://${{ env.REGISTRY_URL }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
 
+  build-backend:
+    name: Build web backend
+    runs-on: moshicon-se-runner-set
+    outputs:
+      IMAGE_TAG: ${{ steps.set-tag.outputs.tag }}
+    env:
+      IMAGE_NAME: emoji-chat/backend
+    defaults:
+      run:
+        working-directory: ./backend
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set image tag
+        id: set-tag
+        run: |
+          TAG=$(git rev-parse --short=7 HEAD)-$(date +'%Y%m%d')
+          echo "IMAGE_TAG=$TAG" >> $GITHUB_ENV
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+
+      - name: Build container
+        run: podman build -t ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} .
+
+      - name: Push container to registry
+        run: skopeo copy containers-storage:localhost/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} --dest-tls-verify=false docker://${{ env.REGISTRY_URL }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+
+
   deploy-helm:
     name: Deploy Helm Chart
-    needs: build-frontend
+    needs:
+      - build-frontend
+      - build-backend
     runs-on: moshicon-se-runner-set
     steps:
       - uses: actions/checkout@v3
