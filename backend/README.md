@@ -43,7 +43,7 @@ Health check endpoint.
 }
 ```
 
-## Environment Variables
+## Environment variables for backend Python server
 
 | Variable | Default | Description |
 |----------|---------|-------------|
