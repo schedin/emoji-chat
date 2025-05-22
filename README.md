@@ -6,6 +6,6 @@ Example project where an LLM can give emoji reactions based on input. You enter 
 Use helm to deploy the application to a Kubernetes cluster. For example:
 
 ```bash
-helm upgrade --install emoji-chat ./charts/emoji-react \
-    --namespace emoji-react --create-namespace
+helm upgrade --install emoji-chat ./charts/emoji-chat \
+    --namespace emoji-chat --create-namespace
 ```
