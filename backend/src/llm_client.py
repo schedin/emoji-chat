@@ -258,12 +258,10 @@ Your response:
             A short inspirational sentence
         """
         sample_prompt = """
-You are a creative writing assistant. Generate a short, inspirational, and engaging sentence that could be used as inspiration for someone to start a conversation or express themselves.
+You are a creative writing assistant. Generate a short, single sentence that would make good candiate for an emoji-reaction.
 
 The sentence should be:
-- Positive and uplifting
 - 5-15 words long
-- Something that would make someone want to share their feelings or thoughts
 - Suitable for all ages
 - Not too specific to any particular situation
 
