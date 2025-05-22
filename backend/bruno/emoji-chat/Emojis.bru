@@ -1,0 +1,17 @@
+meta {
+  name: Emojis
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{API_URL}}/api/emojis
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "message": "I'm happy!"
+  }
+}
