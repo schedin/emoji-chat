@@ -2,46 +2,28 @@
 
 A FastAPI-based backend server that generates emojis based on user messages using an LLM.
 
-## Features
 
-- **Message Validation**: Validates message size and content
-- **Content Moderation**: Optional content filtering and jailbreak detection
-- **Emoji Generation**: Uses LLM to generate appropriate emojis for messages
-- **ASGI Support**: Built with FastAPI and Uvicorn for high performance
-- **Environment Configuration**: Configurable via environment variables
 
-## API Endpoints
+## Run locally
 
-### POST /api/emojis
-Generate emojis for a message.
+### Setup
 
-**Request Body:**
-```json
-{
-  "message": "I'm so happy today!"
-}
+**Linux/MacOS:**
+```bash
+python -m venv .venv
+.venv/Scripts/activate
 ```
 
-**Response:**
-```json
-{
-  "emojis": ["😊", "😄", "🎉"],
-  "message": "I'm so happy today!",
-  "moderation_passed": true
-}
+**Windows:**
+```cmd
+python -m venv .venv
+.venv\Scripts\activate
 ```
 
-### GET /health
-Health check endpoint.
 
-**Response:**
-```json
-{
-  "status": "healthy",
-  "llm_url": "http://llm-server:8000",
-  "content_moderation_enabled": true
-}
-```
+```bash
+pip install -r requirements.txt
+```	
 
 ## Environment variables for backend Python server
 
@@ -61,45 +43,6 @@ Health check endpoint.
 
 ## Running the Server
 
-### Development
 ```bash
-cd backend/src
-python main.py
+python src/main.py
 ```
-
-### Production
-```bash
-cd backend/src
-python start.py
-```
-
-### With Docker
-The server is designed to work with the existing Docker setup in `backend/images/api/`.
-
-## Dependencies
-
-- FastAPI: Web framework
-- Uvicorn: ASGI server
-- Ollama: Python client for Ollama LLM server
-- httpx: HTTP client for additional requests
-- Pydantic: Data validation
-- python-dotenv: Environment variable management
-
-## Model Configuration
-
-The backend uses Ollama to communicate with LLM models. You can configure:
-
-- **Model Selection**: Set `LLM_MODEL` to any model available in your Ollama instance
-- **Separate Moderation Model**: Optionally use a different model for content moderation via `MODERATION_MODEL`
-- **Model Parameters**: Configure temperature and max tokens for fine-tuning responses
-
-### Supported Models
-
-Any model supported by Ollama can be used, including:
-- `gemma3:1b-it-qat` (default, lightweight, quantized)
-- `gemma2:2b` (lightweight)
-- `llama3.1:8b` (more capable)
-- `mistral:7b` (good balance)
-- `qwen2.5:7b` (multilingual support)
-
-Make sure the model is pulled in your Ollama instance before using it.
