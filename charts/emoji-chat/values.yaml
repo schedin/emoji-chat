@@ -25,7 +25,7 @@ ingress:
     # cert-manager.io/cluster-issuer: "letsencrypt"
   hosts:
     - "" # Wildcard host (default host rule)
-  tls:
-    - hosts: []
-      #  - "emojo-chat.moshicon.se"
-      # secretName: "emojo-chat-tls"
+  # tls:
+  #   - secretName: "emoji-chat-tls"
+  #     hosts:
+  #       - "emoji-chat.moshicon.se"

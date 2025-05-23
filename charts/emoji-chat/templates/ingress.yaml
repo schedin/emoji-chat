@@ -6,13 +6,13 @@ metadata:
     app.kubernetes.io/name: emoji-chat
     app.kubernetes.io/component: ingress
   annotations:
-{{- with .Values.ingress.annotations }}
-{{ toYaml . | indent 4 }}
-{{- end }}
+    {{- with .Values.ingress.annotations }}
+    {{ toYaml . | indent 4 }}
+    {{- end }}
 spec:
-  tls:
 {{- with .Values.ingress.tls }}
-{{ toYaml . | indent 2 }}
+  tls:
+{{ toYaml . | indent 4 }}
 {{- end }}
   rules:
 {{- range .Values.ingress.hosts }}
