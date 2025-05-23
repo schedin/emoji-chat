@@ -20,10 +20,20 @@ class LLMClient:
         self.timeout = settings.api_timeout
         self.client = AsyncClient(host=self.base_url)
 
+        # Log initialization
+        logger.info(f"LLMClient initialized with:")
+        logger.info(f"  Base URL: {self.base_url}")
+        logger.info(f"  Model: {self.model}")
+        logger.info(f"  Moderation Model: {self.moderation_model}")
+        logger.info(f"  Temperature: {self.temperature}")
+        logger.info(f"  Max Tokens: {self.max_tokens}")
+
     async def _make_request(self, prompt: str, model: Optional[str] = None) -> Optional[str]:
         """Make a request to the LLM server using Ollama."""
         try:
             model_to_use = model or self.model
+            logger.info(f"Making LLM request to {self.base_url} with model {model_to_use}")
+            logger.debug(f"Request prompt: {prompt[:100]}...")  # Log first 100 chars of prompt
 
             response = await self.client.generate(
                 model=model_to_use,
@@ -35,13 +45,15 @@ class LLMClient:
             )
 
             if response and 'response' in response:
-                return response['response'].strip()
+                response_text = response['response'].strip()
+                logger.info(f"LLM response received: {response_text[:100]}...")  # Log first 100 chars
+                return response_text
             else:
-                logger.error("Invalid response format from Ollama")
+                logger.error(f"Invalid response format from Ollama: {response}")
                 return None
 
         except Exception as e:
-            logger.error(f"LLM request failed: {str(e)}")
+            logger.error(f"LLM request failed: {str(e)}", exc_info=True)
             return None
 
     async def moderate_content(self, message: str) -> Tuple[bool, Optional[str]]:

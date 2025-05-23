@@ -8,7 +8,7 @@ class Settings(BaseSettings):
     """Application settings loaded from environment variables."""
 
     # LLM Configuration
-    llm_url: str = os.getenv("LLM_URL", "http://llm:11434")
+    llm_url: str = os.getenv("LLM_URL", "http://127.0.0.1:11434")  # Default to localhost for development
     llm_model: str = os.getenv("LLM_MODEL", "gemma3:1b-it-qat")
     llm_temperature: float = float(os.getenv("LLM_TEMPERATURE", "0.7"))
     llm_max_tokens: int = int(os.getenv("LLM_MAX_TOKENS", "100"))
