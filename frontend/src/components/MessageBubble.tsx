@@ -1,6 +1,7 @@
 'use client';
 
 import { ChatMessage } from '../types';
+import { getEmojiName } from '../utils/emoji';
 
 interface MessageBubbleProps {
   message: ChatMessage;
@@ -22,7 +23,7 @@ export default function MessageBubble({ message }: MessageBubbleProps) {
                   <span
                     key={index}
                     className="inline-block cursor-help hover:scale-110 transition-transform duration-200"
-                    title={`Emoji: ${emoji}`}
+                    title={getEmojiName(emoji)}
                   >
                     {emoji}
                   </span>
