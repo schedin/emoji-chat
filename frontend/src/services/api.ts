@@ -1,9 +1,6 @@
 import { MessageRequest, EmojiResponse, SampleResponse, ApiError } from '../types';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-
-// Debug: Log the API URL being used
-console.log('API_BASE_URL:', API_BASE_URL);
+// No API_BASE_URL needed - use relative URLs to call the same host/port that served the frontend
 
 class ApiService {
   private async fetchWithErrorHandling<T>(
@@ -47,7 +44,7 @@ class ApiService {
     };
 
     return this.fetchWithErrorHandling<EmojiResponse>(
-      `${API_BASE_URL}/api/emojis`,
+      '/api/emojis',
       {
         method: 'POST',
         body: JSON.stringify(request),
@@ -57,13 +54,13 @@ class ApiService {
 
   async getSampleSentence(): Promise<SampleResponse> {
     return this.fetchWithErrorHandling<SampleResponse>(
-      `${API_BASE_URL}/api/sample`
+      '/api/sample'
     );
   }
 
   async healthCheck(): Promise<boolean> {
     try {
-      await this.fetchWithErrorHandling(`${API_BASE_URL}/health`);
+      await this.fetchWithErrorHandling('/health');
       return true;
     } catch {
       return false;
