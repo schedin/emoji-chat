@@ -6,7 +6,7 @@
   html {
     font-family: system-ui, sans-serif;
   }
-  
+
   body {
     @apply bg-gray-50 text-gray-900;
   }
@@ -16,51 +16,55 @@
   .chat-container {
     @apply max-w-4xl mx-auto h-screen flex flex-col;
   }
-  
+
   .chat-header {
     @apply bg-white shadow-sm border-b border-gray-200 p-4;
   }
-  
+
   .chat-messages {
     @apply flex-1 overflow-y-auto p-4 space-y-4;
   }
-  
+
   .chat-input-area {
     @apply bg-white border-t border-gray-200 p-4;
   }
-  
+
   .message-bubble {
     @apply max-w-xs sm:max-w-md lg:max-w-lg xl:max-w-xl rounded-lg p-3 shadow-sm;
   }
-  
+
   .message-user {
     @apply bg-primary-500 text-white ml-auto;
   }
-  
+
   .message-bot {
     @apply bg-white border border-gray-200 mr-auto;
   }
-  
+
   .emoji-display {
     @apply text-2xl sm:text-3xl space-x-1;
   }
-  
+
+  .emoji-display span:hover {
+    @apply transform scale-110;
+  }
+
   .suggestion-button {
     @apply bg-white border border-gray-300 rounded-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:border-gray-400 transition-colors duration-200 cursor-pointer;
   }
-  
+
   .suggestion-button:hover {
     @apply shadow-sm;
   }
-  
+
   .input-field {
     @apply w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none;
   }
-  
+
   .send-button {
     @apply bg-primary-500 text-white px-6 py-2 rounded-lg hover:bg-primary-600 focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200;
   }
-  
+
   .loading-spinner {
     @apply animate-spin rounded-full h-4 w-4 border-b-2 border-white;
   }

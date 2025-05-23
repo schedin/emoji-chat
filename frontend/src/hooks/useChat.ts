@@ -15,7 +15,7 @@ export function useChat() {
   useEffect(() => {
     const loadInitialSuggestions = async () => {
       try {
-        const suggestionPromises = Array(3).fill(null).map(() => 
+        const suggestionPromises = Array(3).fill(null).map(() =>
           apiService.getSampleSentence()
         );
         const responses = await Promise.all(suggestionPromises);
@@ -53,12 +53,12 @@ export function useChat() {
     try {
       // Call the API to generate emojis
       const response = await apiService.generateEmojis(messageText.trim());
-      
-      // Add bot response
+
+      // Add bot response with only emojis (no redundant message text)
       const botMessage: ChatMessage = {
         id: (Date.now() + 1).toString(),
         type: 'bot',
-        content: response.message,
+        content: '', // Empty content since we only want to show emojis
         emojis: response.emojis,
         timestamp: new Date(),
       };
@@ -66,7 +66,7 @@ export function useChat() {
       setMessages(prev => [...prev, botMessage]);
     } catch (error) {
       setError(error instanceof ApiError ? error.message : 'Failed to send message');
-      
+
       // Add error message as bot response
       const errorMessage: ChatMessage = {
         id: (Date.now() + 1).toString(),
@@ -86,7 +86,7 @@ export function useChat() {
     if (loadingSuggestionIndex !== null) return;
 
     setLoadingSuggestionIndex(index);
-    
+
     try {
       const response = await apiService.getSampleSentence();
       setSuggestions(prev => {
@@ -105,7 +105,7 @@ export function useChat() {
   const handleSuggestionClick = useCallback(async (suggestion: string, index: number) => {
     // Send the message
     await sendMessage(suggestion);
-    
+
     // Replace only the clicked suggestion
     await replaceSuggestion(index);
   }, [sendMessage, replaceSuggestion]);

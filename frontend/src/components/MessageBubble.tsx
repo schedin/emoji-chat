@@ -16,17 +16,22 @@ export default function MessageBubble({ message }: MessageBubbleProps) {
           <p className="text-sm sm:text-base">{message.content}</p>
         ) : (
           <div className="space-y-2">
-            <p className="text-sm text-gray-600">
-              &ldquo;{message.content}&rdquo;
-            </p>
-            {message.emojis && message.emojis.length > 0 && (
+            {message.emojis && message.emojis.length > 0 ? (
               <div className="emoji-display">
                 {message.emojis.map((emoji, index) => (
-                  <span key={index} className="inline-block">
+                  <span
+                    key={index}
+                    className="inline-block cursor-help hover:scale-110 transition-transform duration-200"
+                    title={`Emoji: ${emoji}`}
+                  >
                     {emoji}
                   </span>
                 ))}
               </div>
+            ) : (
+              <p className="text-sm text-gray-600">
+                {message.content}
+              </p>
             )}
           </div>
         )}
