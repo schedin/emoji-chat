@@ -29,7 +29,7 @@ class ApiService {
       if (error instanceof ApiError) {
         throw error;
       }
-      
+
       // Network or other errors
       throw new ApiError(
         error instanceof Error ? error.message : 'Network error occurred'
@@ -37,9 +37,12 @@ class ApiService {
     }
   }
 
-  async generateEmojis(message: string): Promise<EmojiResponse> {
-    const request: MessageRequest = { message };
-    
+  async generateEmojis(message: string, disableModeration: boolean = false): Promise<EmojiResponse> {
+    const request: MessageRequest = {
+      message,
+      disable_moderation: disableModeration
+    };
+
     return this.fetchWithErrorHandling<EmojiResponse>(
       `${API_BASE_URL}/api/emojis`,
       {

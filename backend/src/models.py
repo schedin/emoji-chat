@@ -14,6 +14,10 @@ class MessageRequest(BaseModel):
         max_length=settings.max_message_length,
         description="The user message to generate emojis for"
     )
+    disable_moderation: bool = Field(
+        False,
+        description="Whether to disable content moderation for this request (default: False)"
+    )
 
     @validator('message')
     def validate_message(cls, v):

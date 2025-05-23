@@ -10,6 +10,7 @@ export function useChat() {
   const [error, setError] = useState<string | null>(null);
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [loadingSuggestionIndex, setLoadingSuggestionIndex] = useState<number | null>(null);
+  const [moderationEnabled, setModerationEnabled] = useState<boolean>(true);
 
   // Generate initial suggestions on mount
   useEffect(() => {
@@ -52,7 +53,7 @@ export function useChat() {
 
     try {
       // Call the API to generate emojis
-      const response = await apiService.generateEmojis(messageText.trim());
+      const response = await apiService.generateEmojis(messageText.trim(), !moderationEnabled);
 
       // Add bot response with only emojis (no redundant message text)
       const botMessage: ChatMessage = {
@@ -80,7 +81,7 @@ export function useChat() {
     } finally {
       setIsLoading(false);
     }
-  }, [isLoading]);
+  }, [isLoading, moderationEnabled]);
 
   const replaceSuggestion = useCallback(async (index: number) => {
     if (loadingSuggestionIndex !== null) return;
@@ -120,6 +121,8 @@ export function useChat() {
     error,
     suggestions,
     loadingSuggestionIndex,
+    moderationEnabled,
+    setModerationEnabled,
     sendMessage,
     handleSuggestionClick,
     clearError,

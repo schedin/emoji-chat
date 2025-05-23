@@ -14,7 +14,6 @@ class Settings(BaseSettings):
     llm_max_tokens: int = int(os.getenv("LLM_MAX_TOKENS", "100"))
 
     # Content moderation settings
-    enable_content_moderation: bool = os.getenv("ENABLE_CONTENT_MODERATION", "true").lower() == "true"
     moderation_model: str = os.getenv("MODERATION_MODEL", "")  # Use same model as main if empty
 
     # Message validation settings

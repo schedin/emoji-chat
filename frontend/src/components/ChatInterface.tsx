@@ -16,6 +16,8 @@ export default function ChatInterface() {
     error,
     suggestions,
     loadingSuggestionIndex,
+    moderationEnabled,
+    setModerationEnabled,
     sendMessage,
     handleSuggestionClick,
     clearError,
@@ -71,7 +73,20 @@ export default function ChatInterface() {
             <h1 className="text-xl font-semibold text-gray-900">Emoji Chat</h1>
             <p className="text-sm text-gray-600">Express yourself with AI-generated emoji reactions</p>
           </div>
-          <div className="text-2xl">💬</div>
+          <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2">
+              <label className="flex items-center space-x-2 text-sm text-gray-600 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={moderationEnabled}
+                  onChange={(e) => setModerationEnabled(e.target.checked)}
+                  className="rounded border-gray-300 text-primary-500 focus:ring-primary-500"
+                />
+                <span>Content Moderation</span>
+              </label>
+            </div>
+            <div className="text-2xl">💬</div>
+          </div>
         </div>
       </div>
 

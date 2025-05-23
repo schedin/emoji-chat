@@ -54,7 +54,7 @@ async def health_check():
         status="healthy",
         llm_url=settings.llm_url,
         llm_model=settings.llm_model,
-        content_moderation_enabled=settings.enable_content_moderation,
+        content_moderation_enabled=True,  # Always available, controlled by user
         moderation_model=settings.moderation_model or settings.llm_model
     )
 
@@ -66,16 +66,19 @@ async def generate_emojis(request: MessageRequest):
 
     This endpoint:
     1. Validates the message parameter for reasonable size
-    2. Optionally checks content moderation (if enabled)
+    2. Optionally checks content moderation (if not disabled by user)
     3. Generates appropriate emojis using the LLM
     """
     try:
         message = request.message
-        logger.info(f"Processing message: {message[:50]}...")
+        disable_moderation = request.disable_moderation
+        logger.info(f"Processing message: {message[:50]}... (moderation disabled: {disable_moderation})")
 
-        # Content moderation (if enabled)
+        # Content moderation (if not disabled by user)
         moderation_passed = None
-        if settings.enable_content_moderation:
+        should_moderate = not disable_moderation
+
+        if should_moderate:
             is_safe, reason = await llm_client.moderate_content(message)
             moderation_passed = is_safe
 
@@ -85,6 +88,8 @@ async def generate_emojis(request: MessageRequest):
                     status_code=400,
                     detail=f"Message failed content moderation: {reason}"
                 )
+        else:
+            logger.info(f"Content moderation skipped (user disabled: {disable_moderation})")
 
         # Generate emojis
         emojis = await llm_client.generate_emojis(message)
@@ -161,10 +166,9 @@ def main():
     logger.info(f"Server will run on http://{settings.host}:{settings.port}")
     logger.info(f"LLM URL: {settings.llm_url}")
     logger.info(f"LLM Model: {settings.llm_model}")
-    logger.info(f"Content moderation enabled: {settings.enable_content_moderation}")
-    if settings.enable_content_moderation:
-        moderation_model = settings.moderation_model or settings.llm_model
-        logger.info(f"Moderation model: {moderation_model}")
+    logger.info(f"Content moderation: User-controlled (enabled by default)")
+    moderation_model = settings.moderation_model or settings.llm_model
+    logger.info(f"Moderation model: {moderation_model}")
 
     if settings.development_mode:
         logger.info("Development mode: Auto-reload enabled")

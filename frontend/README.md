@@ -7,6 +7,8 @@ A React/Next.js web application that provides a chat interface for emoji-based r
 - **Chat Interface**: Clean, responsive chat interface with message bubbles
 - **Emoji Responses**: AI-generated emoji responses to user messages
 - **Smart Suggestions**: 3 clickable sentence suggestions that refresh individually
+- **Content Moderation Control**: User-controllable content moderation toggle
+- **Emoji Tooltips**: Hover over emojis to see their names (e.g., "Wrench", "Heart")
 - **Real-time Updates**: Instant message sending and response display
 - **Error Handling**: Graceful error handling with user-friendly messages
 - **Responsive Design**: Works seamlessly on mobile and desktop devices
@@ -23,7 +25,7 @@ A React/Next.js web application that provides a chat interface for emoji-based r
 
 ### Prerequisites
 
-- Node.js 18+ 
+- Node.js 18+
 - npm, yarn, or pnpm
 
 ### Installation

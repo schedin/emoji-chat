@@ -1,6 +1,7 @@
 // API Types matching backend models
 export interface MessageRequest {
   message: string;
+  disable_moderation?: boolean;
 }
 
 export interface EmojiResponse {
