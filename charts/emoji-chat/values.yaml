@@ -14,7 +14,7 @@ frontend:
 backend:
   image:
     image: "emoji-chat/backend"
-  llmServerUrl: "http://llm-server:11434"
+  llmServerUrl: "http://llm:11434"
 
 backendLlm:
   image:
