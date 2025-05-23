@@ -7,39 +7,23 @@
     font-family: system-ui, sans-serif;
     /* Prevent zoom on iOS when focusing inputs */
     -webkit-text-size-adjust: 100%;
-    /* Improve scrolling on iOS */
-    -webkit-overflow-scrolling: touch;
   }
 
   body {
     @apply bg-gray-50 text-gray-900;
     /* Prevent horizontal scroll */
     overflow-x: hidden;
-    /* Ensure full height on mobile */
-    min-height: 100vh;
-    min-height: 100dvh;
-  }
-
-  /* Fix iOS viewport issues */
-  @supports (-webkit-touch-callout: none) {
-    .chat-container {
-      /* iOS Safari specific height fix */
-      min-height: -webkit-fill-available;
-    }
   }
 }
 
 @layer components {
   .chat-container {
     @apply max-w-4xl mx-auto min-h-screen flex flex-col;
-    /* Use min-h-screen instead of h-screen for better mobile support */
-    min-height: 100vh;
-    min-height: 100dvh; /* Dynamic viewport height for modern browsers */
   }
 
   .chat-header {
-    @apply bg-white shadow-sm border-b border-gray-200 p-4 sticky top-0 z-10;
-    /* Make header sticky so it stays visible */
+    @apply bg-white shadow-sm border-b border-gray-200 p-4;
+    /* Header is now scrollable - removed sticky positioning */
   }
 
   .chat-messages {
@@ -51,8 +35,6 @@
   .chat-input-area {
     @apply bg-white border-t border-gray-200 p-4 sticky bottom-0 z-10;
     /* Make input area sticky so it stays at bottom */
-    /* Add safe area padding for iOS devices */
-    padding-bottom: calc(1rem + env(safe-area-inset-bottom));
   }
 
   .message-bubble {
@@ -87,9 +69,6 @@
     @apply w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none;
     /* Prevent zoom on iOS */
     font-size: 16px;
-    /* Improve mobile input experience */
-    -webkit-appearance: none;
-    -webkit-border-radius: 0.5rem;
   }
 
   .send-button {

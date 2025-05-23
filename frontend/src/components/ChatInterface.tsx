@@ -28,19 +28,6 @@ export default function ChatInterface() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  // Handle iOS viewport changes when keyboard appears
-  useEffect(() => {
-    const handleResize = () => {
-      // Force a small delay to ensure proper layout after keyboard animation
-      setTimeout(() => {
-        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-      }, 100);
-    };
-
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
   // Focus input on mount
   useEffect(() => {
     inputRef.current?.focus();
@@ -54,10 +41,9 @@ export default function ChatInterface() {
     setInputValue('');
     await sendMessage(message);
 
-    // Refocus the input field after sending and scroll to bottom
+    // Refocus the input field after sending
     setTimeout(() => {
       inputRef.current?.focus();
-      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, 100);
   };
 
@@ -87,20 +73,7 @@ export default function ChatInterface() {
             <h1 className="text-xl font-semibold text-gray-900">Emoji Chat</h1>
             <p className="text-sm text-gray-600">Express yourself with AI-generated emoji reactions</p>
           </div>
-          <div className="flex items-center space-x-4">
-            <div className="flex items-center space-x-2">
-              <label className="flex items-center space-x-2 text-sm text-gray-600 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={moderationEnabled}
-                  onChange={(e) => setModerationEnabled(e.target.checked)}
-                  className="rounded border-gray-300 text-primary-500 focus:ring-primary-500"
-                />
-                <span>Content Moderation</span>
-              </label>
-            </div>
-            <div className="text-2xl">💬</div>
-          </div>
+          <div className="text-2xl">💬</div>
         </div>
       </div>
 
@@ -165,35 +138,46 @@ export default function ChatInterface() {
           </div>
         </div>
 
-        {/* Input Form */}
-        <form onSubmit={handleSubmit} className="flex space-x-2">
-          <input
-            ref={inputRef}
-            type="text"
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder="Type your message here..."
-            className="input-field"
-            disabled={isLoading}
-            maxLength={1000}
-          />
-          <button
-            type="submit"
-            disabled={!inputValue.trim() || isLoading}
-            className="send-button"
-          >
-            {isLoading ? (
-              <div className="loading-spinner"></div>
-            ) : (
-              'Send'
-            )}
-          </button>
-        </form>
+        {/* Input Form with Moderation */}
+        <div className="space-y-2">
+          <form onSubmit={handleSubmit} className="flex space-x-2">
+            <input
+              ref={inputRef}
+              type="text"
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder="Type your message here..."
+              className="input-field"
+              disabled={isLoading}
+              maxLength={1000}
+            />
+            <button
+              type="submit"
+              disabled={!inputValue.trim() || isLoading}
+              className="send-button"
+            >
+              {isLoading ? (
+                <div className="loading-spinner"></div>
+              ) : (
+                'Send'
+              )}
+            </button>
+          </form>
 
-        <p className="text-xs text-gray-500 text-center">
-          Messages are limited to 1000 characters
-        </p>
+          {/* Moderation checkbox moved to footer */}
+          <div className="flex justify-end">
+            <label className="flex items-center space-x-2 text-xs text-gray-600 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={moderationEnabled}
+                onChange={(e) => setModerationEnabled(e.target.checked)}
+                className="rounded border-gray-300 text-primary-500 focus:ring-primary-500 w-3 h-3"
+              />
+              <span>Moderation</span>
+            </label>
+          </div>
+        </div>
       </div>
     </div>
   );
