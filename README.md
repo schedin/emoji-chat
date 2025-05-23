@@ -1,5 +1,6 @@
 # Emoji Chat
 Example project where an LLM can give emoji reactions based on input. You enter a sentance on a web page and the LLM will respond with emojis.
+If you are unlucky the crazy and slightly indeterministic moderation filter (also LLM based) will reject your message. You can turn the moderation off using the checkbox.
 
 
 
