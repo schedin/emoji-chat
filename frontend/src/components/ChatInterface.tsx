@@ -69,7 +69,7 @@ export default function ChatInterface() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-xl font-semibold text-gray-900">Emoji Chat</h1>
-            <p className="text-sm text-gray-600">Express yourself with AI-generated emojis</p>
+            <p className="text-sm text-gray-600">Express yourself with AI-generated emoji reactions</p>
           </div>
           <div className="text-2xl">💬</div>
         </div>
