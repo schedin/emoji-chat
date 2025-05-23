@@ -28,6 +28,19 @@ export default function ChatInterface() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
+  // Handle iOS viewport changes when keyboard appears
+  useEffect(() => {
+    const handleResize = () => {
+      // Force a small delay to ensure proper layout after keyboard animation
+      setTimeout(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   // Focus input on mount
   useEffect(() => {
     inputRef.current?.focus();
