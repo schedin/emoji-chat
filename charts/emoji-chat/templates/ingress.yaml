@@ -26,4 +26,11 @@ spec:
             name: frontend
             port:
               name: http
+      - path: "/api"
+        pathType: "Prefix"
+        backend:
+          service:
+            name: backend
+            port:
+              name: http
 {{- end }}
