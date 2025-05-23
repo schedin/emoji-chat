@@ -99,4 +99,8 @@ jobs:
             --namespace emoji-chat \
             --create-namespace \
             --set image.tag=${{ needs.generate-tag.outputs.IMAGE_TAG }} \
-            --set global.imageRegistryPrefix=${{ env.REGISTRY_URL }}
+            --set global.imageRegistryPrefix=${{ env.REGISTRY_URL }} \
+            --set ingress.annotations.cert-manager\\.io/TODOcluster-issuer=letsencrypt \
+            --set ingress.hosts[0]=emoji-chat.moshicon.se \
+            --set ingress.tls[0].secretName=emoji-chat-tls \
+            --set ingress.tls[0].hosts[0]=emoji-chat.moshicon.se
