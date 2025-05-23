@@ -16,19 +16,24 @@ export function useChat() {
   useEffect(() => {
     const loadInitialSuggestions = async () => {
       try {
+        console.log('Loading initial suggestions...');
         const suggestionPromises = Array(3).fill(null).map(() =>
           apiService.getSampleSentence()
         );
         const responses = await Promise.all(suggestionPromises);
-        setSuggestions(responses.map(response => response.sample));
+        const newSuggestions = responses.map(response => response.sample);
+        console.log('Loaded suggestions:', newSuggestions);
+        setSuggestions(newSuggestions);
       } catch (error) {
         console.error('Failed to load initial suggestions:', error);
-        // Fallback suggestions
+        // Clear any existing error state and use fallback suggestions
+        setError(null);
         setSuggestions([
           "I'm feeling excited about today!",
           "What a beautiful morning this is.",
           "I'm grateful for all the good things in my life."
         ]);
+        console.log('Using fallback suggestions');
       }
     };
 
@@ -53,7 +58,9 @@ export function useChat() {
 
     try {
       // Call the API to generate emojis
+      console.log('Sending message to API:', messageText.trim());
       const response = await apiService.generateEmojis(messageText.trim(), !moderationEnabled);
+      console.log('Received response:', response);
 
       // Add bot response with only emojis (no redundant message text)
       const botMessage: ChatMessage = {
@@ -66,10 +73,23 @@ export function useChat() {
 
       setMessages(prev => [...prev, botMessage]);
     } catch (error) {
-      setError(error instanceof ApiError ? error.message : 'Failed to send message');
+      console.error('Failed to send message:', error);
+
+      let errorMessage = 'Failed to send message';
+      if (error instanceof ApiError) {
+        errorMessage = error.message;
+      } else if (error instanceof Error) {
+        if (error.message.includes('fetch') || error.message.includes('NetworkError')) {
+          errorMessage = 'Unable to connect to server. Please check your connection.';
+        } else {
+          errorMessage = error.message;
+        }
+      }
+
+      setError(errorMessage);
 
       // Add error message as bot response
-      const errorMessage: ChatMessage = {
+      const errorBotMessage: ChatMessage = {
         id: (Date.now() + 1).toString(),
         type: 'bot',
         content: 'Sorry, I encountered an error processing your message.',
@@ -77,7 +97,7 @@ export function useChat() {
         timestamp: new Date(),
       };
 
-      setMessages(prev => [...prev, errorMessage]);
+      setMessages(prev => [...prev, errorBotMessage]);
     } finally {
       setIsLoading(false);
     }
@@ -89,7 +109,9 @@ export function useChat() {
     setLoadingSuggestionIndex(index);
 
     try {
+      console.log('Replacing suggestion at index:', index);
       const response = await apiService.getSampleSentence();
+      console.log('New suggestion received:', response.sample);
       setSuggestions(prev => {
         const newSuggestions = [...prev];
         newSuggestions[index] = response.sample;
@@ -98,6 +120,7 @@ export function useChat() {
     } catch (error) {
       console.error('Failed to replace suggestion:', error);
       // Keep the existing suggestion on error
+      // Don't show error to user for suggestion replacement failures
     } finally {
       setLoadingSuggestionIndex(null);
     }

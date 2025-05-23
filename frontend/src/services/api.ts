@@ -2,6 +2,9 @@ import { MessageRequest, EmojiResponse, SampleResponse, ApiError } from '../type
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
+// Debug: Log the API URL being used
+console.log('API_BASE_URL:', API_BASE_URL);
+
 class ApiService {
   private async fetchWithErrorHandling<T>(
     url: string,
