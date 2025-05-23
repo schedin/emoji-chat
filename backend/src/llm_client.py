@@ -51,8 +51,8 @@ class LLMClient:
         Returns:
             Tuple of (is_safe, reason_if_not_safe)
         """
-        if not settings.enable_content_moderation:
-            return True, None
+        # Content moderation is now always available when called
+        # The decision to moderate is made at the API level
 
         moderation_prompt = f"""
 You are a content moderator. Your task is to identify ONLY clearly harmful content.

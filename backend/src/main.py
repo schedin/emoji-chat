@@ -37,12 +37,12 @@ app.add_middleware(
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
     """Global exception handler."""
-    logger.error(f"Unhandled exception: {str(exc)}")
+    logger.error(f"Unhandled exception in {request.method} {request.url}: {str(exc)}", exc_info=True)
     return JSONResponse(
         status_code=500,
         content=ErrorResponse(
             error="Internal server error",
-            detail="An unexpected error occurred"
+            detail=f"An unexpected error occurred: {str(exc)}"
         ).model_dump()
     )
 
@@ -79,26 +79,49 @@ async def generate_emojis(request: MessageRequest):
         should_moderate = not disable_moderation
 
         if should_moderate:
-            is_safe, reason = await llm_client.moderate_content(message)
-            moderation_passed = is_safe
+            logger.info("Starting content moderation check...")
+            try:
+                is_safe, reason = await llm_client.moderate_content(message)
+                moderation_passed = is_safe
+                logger.info(f"Moderation result: safe={is_safe}, reason={reason}")
 
-            if not is_safe:
-                logger.warning(f"Message failed moderation: {reason}")
+                if not is_safe:
+                    logger.warning(f"Message failed moderation: {reason}")
+                    raise HTTPException(
+                        status_code=400,
+                        detail=f"Message failed content moderation: {reason}"
+                    )
+                else:
+                    logger.info("Message passed content moderation")
+            except HTTPException:
+                # Re-raise HTTP exceptions (moderation failures)
+                raise
+            except Exception as e:
+                logger.error(f"Error during content moderation: {str(e)}", exc_info=True)
                 raise HTTPException(
-                    status_code=400,
-                    detail=f"Message failed content moderation: {reason}"
+                    status_code=500,
+                    detail=f"Content moderation failed: {str(e)}"
                 )
         else:
             logger.info(f"Content moderation skipped (user disabled: {disable_moderation})")
 
         # Generate emojis
-        emojis = await llm_client.generate_emojis(message)
+        logger.info("Starting emoji generation...")
+        try:
+            emojis = await llm_client.generate_emojis(message)
+            logger.info(f"LLM returned emojis: {emojis}")
 
-        if not emojis:
-            logger.warning("No emojis generated, using fallback")
-            emojis = ["😊", "👍"]
+            if not emojis:
+                logger.warning("No emojis generated, using fallback")
+                emojis = ["😊", "👍"]
 
-        logger.info(f"Generated emojis: {emojis}")
+            logger.info(f"Final emojis: {emojis}")
+        except Exception as e:
+            logger.error(f"Error during emoji generation: {str(e)}", exc_info=True)
+            raise HTTPException(
+                status_code=500,
+                detail=f"Emoji generation failed: {str(e)}"
+            )
 
         return EmojiResponse(
             emojis=emojis,
