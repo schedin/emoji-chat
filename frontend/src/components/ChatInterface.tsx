@@ -124,18 +124,15 @@ export default function ChatInterface() {
         )}
 
         {/* Suggestions */}
-        <div className="space-y-2">
-          <p className="text-sm text-gray-600 font-medium">Try these suggestions:</p>
-          <div className="flex flex-wrap gap-2">
-            {suggestions.map((suggestion, index) => (
-              <SuggestionButton
-                key={`${suggestion}-${index}`}
-                suggestion={suggestion}
-                onClick={(suggestion) => handleSuggestionClickWrapper(suggestion, index)}
-                isLoading={loadingSuggestionIndex === index || isLoading}
-              />
-            ))}
-          </div>
+        <div className="flex flex-wrap gap-2">
+          {suggestions.map((suggestion, index) => (
+            <SuggestionButton
+              key={`${suggestion}-${index}`}
+              suggestion={suggestion}
+              onClick={(suggestion) => handleSuggestionClickWrapper(suggestion, index)}
+              isLoading={loadingSuggestionIndex === index || isLoading}
+            />
+          ))}
         </div>
 
         {/* Input Form with Moderation */}
