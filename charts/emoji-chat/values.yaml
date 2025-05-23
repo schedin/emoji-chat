@@ -1,7 +1,7 @@
 
 global:
   # Image registry (and optional repository sub path) to use for all images
-  imageRegistryPrefix: "127.0.0.1:30000/emojo-chat"
+  imageRegistryPrefix: "127.0.0.1:30000"
 
 image:
   pullPolicy: Always
@@ -9,16 +9,16 @@ image:
 
 frontend:
   image:
-    image: "frontend"
+    image: "emoji-chat/frontend"
 
 backend:
   image:
-    image: "backend"
+    image: "emoji-chat/backend"
   llmServerUrl: "http://llm-server:11434"
 
 backendLlm:
   image:
-    image: "llm"
+    image: "emoji-chat/backend-llm"
 
 ingress:
   annotations: {}
