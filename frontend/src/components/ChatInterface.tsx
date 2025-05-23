@@ -54,10 +54,11 @@ export default function ChatInterface() {
     setInputValue('');
     await sendMessage(message);
 
-    // Refocus the input field after sending
+    // Refocus the input field after sending and scroll to bottom
     setTimeout(() => {
       inputRef.current?.focus();
-    }, 0);
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, 100);
   };
 
   const handleSuggestionClickWrapper = async (suggestion: string, index: number) => {
