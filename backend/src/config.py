@@ -30,6 +30,9 @@ class Settings(BaseSettings):
     # Development settings
     development_mode: bool = os.getenv("DEVELOPMENT_MODE", "false").lower() == "true"
 
+    # Logging settings
+    log_level: str = os.getenv("LOG_LEVEL", "INFO").upper()
+
     class Config:
         env_file = ".env"
         case_sensitive = False

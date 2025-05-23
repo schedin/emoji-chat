@@ -1,6 +1,7 @@
 """FastAPI backend server for emoji chat application."""
 
 import logging
+from contextlib import asynccontextmanager
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
@@ -10,18 +11,69 @@ from config import settings
 from models import MessageRequest, EmojiResponse, ErrorResponse, HealthResponse, SampleResponse
 from llm_client import llm_client
 
-# Configure logging
+# Configure logging for container environments
+import sys
+
+# Configure logging to output to STDOUT with proper formatting
+log_level = getattr(logging, settings.log_level, logging.INFO)
 logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    level=log_level,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    handlers=[
+        logging.StreamHandler(sys.stdout)  # Explicitly use STDOUT
+    ],
+    force=True  # Override any existing logging configuration
 )
+
+# Ensure logs are flushed immediately (important for containers)
+logging.getLogger().handlers[0].flush = sys.stdout.flush
+
+# Set unbuffered output for containers
+sys.stdout.reconfigure(line_buffering=True)
+sys.stderr.reconfigure(line_buffering=True)
+
 logger = logging.getLogger(__name__)
+
+# Test logging immediately
+logger.info("🔧 Logging system initialized - this message should be visible in container logs")
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Application lifespan manager."""
+    # Startup
+    logger.info("=" * 50)
+    logger.info("🚀 Emoji Chat Backend Starting Up")
+    logger.info("=" * 50)
+    logger.info(f"LLM URL: {settings.llm_url}")
+    logger.info(f"LLM Model: {settings.llm_model}")
+    logger.info(f"Content Moderation: User-controlled (enabled by default)")
+    logger.info(f"Moderation Model: {settings.moderation_model or settings.llm_model}")
+    logger.info(f"Development Mode: {settings.development_mode}")
+    logger.info(f"Log Level: {settings.log_level}")
+    logger.info("=" * 50)
+
+    # Test LLM connection on startup
+    try:
+        logger.info("Testing LLM connection...")
+        sample = await llm_client.generate_sample_sentence()
+        logger.info(f"✅ LLM connection successful! Test sample: {sample}")
+    except Exception as e:
+        logger.error(f"❌ LLM connection failed: {str(e)}")
+        logger.error("The application will start but LLM features may not work properly")
+
+    logger.info("🎉 Application startup complete!")
+
+    yield
+
+    # Shutdown
+    logger.info("🛑 Application shutting down...")
 
 # Create FastAPI app
 app = FastAPI(
     title="Emoji Chat Backend",
     description="A FastAPI backend that generates emojis based on user messages using an LLM",
-    version="1.0.0"
+    version="1.0.0",
+    lifespan=lifespan
 )
 
 # Add CORS middleware

@@ -5,7 +5,10 @@ from typing import List, Tuple, Optional
 from ollama import AsyncClient
 from config import settings
 
+# Ensure this logger uses the same configuration as main
 logger = logging.getLogger(__name__)
+# Make sure the logger propagates to the root logger
+logger.propagate = True
 
 
 class LLMClient:
