@@ -1,7 +1,7 @@
 FROM docker.io/nginx:alpine
 
 # Copy the custom nginx configuration
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY image/nginx.conf /etc/nginx/conf.d/default.conf
 
 # Copy the static export output
 COPY out /usr/share/nginx/html

@@ -9,7 +9,7 @@ export default function ChatInterface() {
   const [inputValue, setInputValue] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  
+
   const {
     messages,
     isLoading,
@@ -34,18 +34,28 @@ export default function ChatInterface() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!inputValue.trim() || isLoading) return;
-    
+
     const message = inputValue;
     setInputValue('');
     await sendMessage(message);
+
+    // Refocus the input field after sending
+    setTimeout(() => {
+      inputRef.current?.focus();
+    }, 0);
   };
 
   const handleSuggestionClickWrapper = async (suggestion: string, index: number) => {
     setInputValue('');
     await handleSuggestionClick(suggestion, index);
+
+    // Refocus the input field after clicking suggestion
+    setTimeout(() => {
+      inputRef.current?.focus();
+    }, 0);
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
+  const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSubmit(e as any);
@@ -74,11 +84,11 @@ export default function ChatInterface() {
             <p className="text-sm">Send a message or try one of the suggestions below.</p>
           </div>
         )}
-        
+
         {messages.map((message) => (
           <MessageBubble key={message.id} message={message} />
         ))}
-        
+
         {isLoading && (
           <div className="flex justify-start">
             <div className="message-bubble message-bot">
@@ -89,7 +99,7 @@ export default function ChatInterface() {
             </div>
           </div>
         )}
-        
+
         <div ref={messagesEndRef} />
       </div>
 
@@ -133,7 +143,7 @@ export default function ChatInterface() {
             type="text"
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
-            onKeyPress={handleKeyPress}
+            onKeyDown={handleKeyDown}
             placeholder="Type your message here..."
             className="input-field"
             disabled={isLoading}
@@ -151,7 +161,7 @@ export default function ChatInterface() {
             )}
           </button>
         </form>
-        
+
         <p className="text-xs text-gray-500 text-center">
           Messages are limited to 1000 characters
         </p>
