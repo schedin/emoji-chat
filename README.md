@@ -20,7 +20,7 @@ The application consists of three main components:
    - The LLM returns 3-5 relevant emojis
 4. **Response Display**: The frontend displays the emojis as a response in the chat interface
 
-![Emoji Chat Demo](https://github.com/user-attachments/assets/1516805b-a23d-48d2-bc6e-34588bd7e507)
+https://github.com/user-attachments/assets/1516805b-a23d-48d2-bc6e-34588bd7e507
 
 ## Technical Architecture
 
