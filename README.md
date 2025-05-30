@@ -2,6 +2,9 @@
 
 Emoji Chat is an interactive web application that uses AI to generate emoji reactions based on user input. Users enter a sentence on the web interface, and the application responds with relevant emojis that capture the sentiment and context of the message.
 
+https://github.com/user-attachments/assets/1516805b-a23d-48d2-bc6e-34588bd7e507
+
+
 ## Overview
 
 The application consists of three main components:
@@ -19,8 +22,6 @@ The application consists of three main components:
    - The LLM analyzes the message sentiment and context
    - The LLM returns 3-5 relevant emojis
 4. **Response Display**: The frontend displays the emojis as a response in the chat interface
-
-https://github.com/user-attachments/assets/1516805b-a23d-48d2-bc6e-34588bd7e507
 
 ## Technical Architecture
 
